@@ -32,7 +32,7 @@ const handleCreate = (db)=> (req,res) => {
             return trx('cliente')
             .where({id:id[0]})
             .then(cliente => {
-                res.json(cliente[0])
+                res.json('Cliente Creado con exito')
             })
         })
         .then(trx.commit)
@@ -62,7 +62,7 @@ const handleUpdate = (db)=> (req,res) => {
             return trx('cliente')
             .where({id})
             .then(cliente => {
-                res.json(cliente[0])
+                res.json('Datos del cliente actualizados')
             })
         })
         .then(trx.commit)

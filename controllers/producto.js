@@ -14,9 +14,9 @@ const handleGet = (db)=> (req,res) => {
 }
 
 const handleCreate = (db)=> (req,res) => {
-    const { nombre, cantidad, idSerial, descripcion} = req.body;
+    const { nombre, cantidad, descripcion,precio} = req.body;
 
-    if(!nombre || !cantidad || !idSerial){
+    if(!nombre || !cantidad || !precio){
         return res.status(400).json('Formulario Llenado Incorrectamente')
     }
 
@@ -24,7 +24,7 @@ const handleCreate = (db)=> (req,res) => {
         trx.insert({
             nombre,
             cantidad,
-            idSerial,
+            precio,
             descripcion
         })
         .into('producto')
@@ -32,7 +32,7 @@ const handleCreate = (db)=> (req,res) => {
             return trx('producto')
             .where({id:id[0]})
             .then(producto => {
-                res.json(producto[0])
+                res.json('Producto creado con exito')
             })
         })
         .then(trx.commit)
@@ -43,7 +43,7 @@ const handleCreate = (db)=> (req,res) => {
 
 
 const handleUpdate = (db)=> (req,res) => {
-    const {id, nombre, cantidad, idSerial, descripcion} = req.body;
+    const {id, nombre, cantidad, precio, descripcion} = req.body;
 
     if(!id){
         return res.status(400).json('Formulario Llenado Incorrectamente')
@@ -54,14 +54,14 @@ const handleUpdate = (db)=> (req,res) => {
         .update({
             nombre,
             cantidad,
-            idSerial,
+            precio,
             descripcion
         })
         .then(()=>{
             return trx('producto')
             .where({id})
             .then(producto => {
-                res.json(producto[0])
+                res.json('Producto actualizado con exito')
             })
         })
         .then(trx.commit)
@@ -85,7 +85,7 @@ const handleRemove = (db)=> (req,res) => {
         .then(trx.commit)
         .catch(trx.rollback)
     })
-    .catch(err => res.status(400).json('No se ha podido eliminar el producto'))
+    .catch(err => res.status(400).json(err))
 }
 
 
