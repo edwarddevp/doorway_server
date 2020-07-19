@@ -32,6 +32,7 @@ const handleCreate = (db)=> (req,res) => {
         .into('producto')
         .returning('id')
         .then(id=>{
+            console.log(id+"asdasdsa")
             return trx('producto')
             .where({id:id[0]})
             .then(producto => {
