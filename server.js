@@ -26,7 +26,7 @@ const factura = require('./controllers/factura');
 const orden = require('./controllers/ordernesDeCompra');
 const databaseOptions = require('./knexfile');
 
-console.log(databaseOptions)
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0; 
 
 const db = knex(databaseOptions);
 
