@@ -22,6 +22,9 @@ const reporte = require('./controllers/reporte');
 //reporte factura
 const factura = require('./controllers/factura');
 
+//reporte orden
+const orden = require('./controllers/ordernesDeCompra');
+
 const db = knex({
   client: 'mysql',
   connection: {
@@ -65,6 +68,8 @@ app.post('/client-update', client.handleUpdate(db));
 
 app.post('/client-remove', client.handleRemove(db));
 
+app.post('/client-find', client.handleFind(db));
+
 //producto
 
 app.get('/product-list', producto.handleList(db));
@@ -76,6 +81,18 @@ app.post('/product-create', producto.handleCreate(db));
 app.post('/product-update', producto.handleUpdate(db));
 
 app.post('/product-remove', producto.handleRemove(db));
+
+//orden
+
+app.get('/orden-list', orden.handleList(db));
+
+app.get('/orden-get/:id', orden.handleGet(db));
+
+app.post('/orden-create', orden.handleCreate(db));
+
+app.post('/orden-update', orden.handleUpdate(db));
+
+app.post('/orden-remove', orden.handleRemove(db));
 
 //reporte
 

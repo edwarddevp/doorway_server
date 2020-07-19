@@ -13,6 +13,30 @@ const handleGet = (db)=> (req,res) => {
     .catch(err=>res.status(400).json('error getting cliente'));
 }
 
+const handleFind = (db)=> (req,res) => {
+    const { search } = req.body;
+
+    if(!search){
+        return res.status(400).json('No se recibio nigun texto')
+    }
+
+    db.transaction(trx => {
+        trx.select()
+        .from('cliente')
+        // .raw("WHERE nombre LIKE '%"+search+"%' OR cedula LIKE '%"+search+"%' OR correo LIKE '%"+search+"%'")
+        .where('nombre', '=', search)
+        .orWhere('cedula', '=', search)
+        .orWhere('correo', '=', search)
+        .then(client=>{
+            if(client.length > 0) return res.json(client[0])
+            else return res.json("Cliente no encontrado")
+        })
+        .then(trx.commit)
+        .catch(trx.rollback)
+    })
+    .catch(err => res.status(400).json("Fallo Al identificar cliente"))
+}
+
 const handleCreate = (db)=> (req,res) => {
     const { nombre, cedula, direccion, correo} = req.body;
 
@@ -95,5 +119,6 @@ module.exports = {
     handleGet,
     handleCreate,
     handleUpdate,
-    handleRemove
+    handleRemove,
+    handleFind
 }

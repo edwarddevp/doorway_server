@@ -7,9 +7,9 @@ const handleGet = (db)=> (req,res) => {
 }
 
 const handleCreate = (db)=> (req,res) => {
-    const { fecha, idCliente, productoIds} = req.body;
-
-    if(!fecha || !idCliente || !productoIds){
+    const {  idCliente, productoIds} = req.body;
+    const fecha = new Date()
+    if(!idCliente || !productoIds){
         return res.status(400).json('Formulario Llenado Incorrectamente')
     }
 
@@ -20,7 +20,6 @@ const handleCreate = (db)=> (req,res) => {
         })
         .into('factura')
         .then(facturaId=>{
-            console.log(facturaId)
             const facturaReporteParams = productoIds.map((productId)=>{
                 return {idFactura:facturaId,idProducto:productId}
             })
@@ -28,6 +27,22 @@ const handleCreate = (db)=> (req,res) => {
             .insert(facturaReporteParams)
             .then(() => {
                 res.json("Factura Realizada con exito")
+                const productsIds = facturaReporteParams.map(item=>item.idProducto)
+                return trx('producto')
+                    .select()
+                    .whereIn('id', productsIds)
+                    .then(result=>{
+                        result.map(item=>{
+                            db('producto')
+                            .where({id:item.id})
+                            .update({
+                                cantidad: item.cantidad - 1,
+                            })
+                            .then(result=>null)
+                            .catch(err=>console.log(err))
+                        })
+                    })
+                    .catch(err=>console.log(err))
             })
         })
         .then(trx.commit)
