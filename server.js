@@ -24,16 +24,11 @@ const factura = require('./controllers/factura');
 
 //reporte orden
 const orden = require('./controllers/ordernesDeCompra');
+const databaseOptions = require('./knexfile');
 
-const db = knex({
-  client: 'mysql',
-  connection: {
-    host : 'localhost',
-    user : 'root',
-    password : '',
-    database : 'doorway_bd'
-  }
-  });
+console.log(databaseOptions)
+
+const db = knex(databaseOptions);
 
 const app = express();
 
@@ -104,10 +99,10 @@ app.post('/report-list', reporte.handleList(db,path));
 
 app.post('/factura-create', factura.handleCreate(db,path));
 
-app.post('/factura-update', factura.handleUpdate(db,path));
+app.post('/factura-remove', factura.handleRemove(db,path));
 
-app.get('/factura-get/:id', factura.handleGet(db,path));
+app.get('/factura-list', factura.handleList(db,path));
 
 
 
-app.listen( 3000, () => console.log('app is runnning on port '+ 3000));
+app.listen( process.env.PORT || 3000, () => console.log('app is runnning on port '+ process.env.PORT || 3000));

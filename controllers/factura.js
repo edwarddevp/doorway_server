@@ -1,10 +1,38 @@
-const handleGet = (db)=> (req,res) => {
-    const { id } = req.params;
-    db('cliente')
-    .where({id:id})
-    .then(data=> res.json(data[0]))
-    .catch(err=>res.status(400).json('error getting cliente'));
+const handleList = (db)=> (req,res) => {
+    const regex = /-/gi;
+    db.transaction(trx => {
+      trx.from('factura')
+        .select('factura.id as id',
+          'factura.fecha as fecha',
+          'cliente.nombre as nombreCliente',
+          'cliente.cedula as cedulaCliente',
+          'cliente.correo as correoCliente',
+          trx.raw('GROUP_CONCAT(producto.nombre) as productosNombres, GROUP_CONCAT(producto.precio) as productosPrecios')
+          )
+        .innerJoin(
+          'cliente',
+          'cliente.id',
+          'factura.idCliente'
+        ).innerJoin(
+          'productofactura',
+          'productofactura.idFactura',
+          'factura.id'
+        ).innerJoin(
+          'producto',
+          'productofactura.idProducto',
+          'producto.id'
+        )
+        .andWhere('factura.isRemoved', 0)
+        .groupBy('id')
+        .then(result => {
+              res.json(result)
+          })
+          .then(trx.commit)
+          .catch(trx.rollback)
+        })
+      .catch(err => res.status(400).json(err))
 }
+
 
 const handleCreate = (db)=> (req,res) => {
     const {  idCliente, productoIds} = req.body;
@@ -52,7 +80,7 @@ const handleCreate = (db)=> (req,res) => {
 }
 
 
-const handleUpdate = (db)=> (req,res) => {
+const handleRemove = (db)=> (req,res) => {
     const {id, nombre, cedula, direccion, correo} = req.body;
 
     if(!id){
@@ -60,20 +88,11 @@ const handleUpdate = (db)=> (req,res) => {
     }
 
     db.transaction(trx => {
-        trx('cliente')
+        trx('factura')
         .where({id:id})
-        .update({
-            nombre,
-            cedula,
-            direccion,
-            correo
-        })
+        .update({isRemoved:1})
         .then(idResult=>{
-            return trx('cliente')
-            .where({id:idResult})
-            .then(user => {
-                res.json(user[0])
-            })
+                res.json("Factura anulada con exito")
         })
         .then(trx.commit)
         .catch(trx.rollback)
@@ -83,7 +102,7 @@ const handleUpdate = (db)=> (req,res) => {
 
 
 module.exports = {
-    handleGet,
+    handleList,
     handleCreate,
-    handleUpdate,
+    handleRemove,
 }

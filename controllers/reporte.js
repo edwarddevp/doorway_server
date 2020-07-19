@@ -156,6 +156,7 @@ const handleList = (db) => (req, res) => {
         'producto.id'
       )
       .whereBetween('factura.fecha', [initialDate.replace(regex,'/'), finalDate.replace(regex,'/')])
+      .andWhere('factura.isRemoved', 0)
       .groupBy('id')
       .then(result => {
             res.json(result)
@@ -198,6 +199,7 @@ const handleExport = (db, path) => (req, res) => {
         'producto.id'
       )
       .whereBetween('factura.fecha', [initialDate.replace(regex,'/'), finalDate.replace(regex,'/')])
+      .andWhere('factura.isRemoved', 0)
       .groupBy('id')
       .then(result => {
           const doc = docDefinition(date,hours,initialDate, finalDate,result)

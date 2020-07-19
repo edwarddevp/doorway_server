@@ -12,7 +12,7 @@ const handleRegister = (db, bcrypt)=> (req,res) =>{
         trx.insert({
             password:hash,
             username: name,
-            NombreCompleto: email
+            email: email
         })
         .into('users')
         .then(id=>{
@@ -25,7 +25,7 @@ const handleRegister = (db, bcrypt)=> (req,res) =>{
         .then(trx.commit)
         .catch(trx.rollback)
     })
-    .catch(err => res.status(400).json('No se ha podido registrar'))
+    .catch(err => res.status(400).json("No se ha podido registrar el usuario"))
 }
 
 module.exports ={

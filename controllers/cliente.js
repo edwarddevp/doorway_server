@@ -1,5 +1,6 @@
 const handleList = (db)=> (req,res) => {
     db('cliente')
+    .where('isRemoved', 0)
     .then(data=> res.json(data))
     .catch(err=>res.status(400).json(err));
 }
@@ -9,6 +10,7 @@ const handleGet = (db)=> (req,res) => {
     const { id } = req.params;
     db('cliente')
     .where({id:id})
+    .andWhere('isRemoved', 0)
     .then(data=> res.json(data[0]))
     .catch(err=>res.status(400).json('error getting cliente'));
 }
@@ -27,6 +29,7 @@ const handleFind = (db)=> (req,res) => {
         .where('nombre', '=', search)
         .orWhere('cedula', '=', search)
         .orWhere('correo', '=', search)
+        .andWhere('isRemoved', 0)
         .then(client=>{
             if(client.length > 0) return res.json(client[0])
             else return res.json("Cliente no encontrado")
@@ -105,12 +108,12 @@ const handleRemove = (db)=> (req,res) => {
     db.transaction(trx => {
         trx('cliente')
         .where({id:id})
-        .del()
+        .update({isRemoved:1})
         .then(()=>res.json('cliente eliminado con exito'))
         .then(trx.commit)
         .catch(trx.rollback)
     })
-    .catch(err => res.status(400).json('No se ha podido eliminar el cliente'))
+    .catch(err => res.status(400).json(err))
 }
 
 

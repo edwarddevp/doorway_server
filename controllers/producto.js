@@ -1,5 +1,6 @@
 const handleList = (db)=> (req,res) => {
     db('producto')
+    .where('isRemoved', 0)
     .then(data=> res.json(data))
     .catch(err=>res.status(400).json(err));
 }
@@ -9,6 +10,7 @@ const handleGet = (db)=> (req,res) => {
     const { id } = req.params;
     db('producto')
     .where({id:id})
+    .andWhere('isRemoved', 0)
     .then(data=> res.json(data[0]))
     .catch(err=>res.status(400).json('error getting producto'));
 }
@@ -80,7 +82,7 @@ const handleRemove = (db)=> (req,res) => {
     db.transaction(trx => {
         trx('producto')
         .where({id:id})
-        .del()
+        .update({isRemoved:1})
         .then(()=>res.json('producto eliminado con exito'))
         .then(trx.commit)
         .catch(trx.rollback)
