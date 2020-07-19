@@ -21,7 +21,7 @@ const handleCreate = (db)=> (req,res) => {
     if(!nombre || !cantidad || !precio){
         return res.status(400).json('Formulario Llenado Incorrectamente')
     }
-    console.log("1")
+
     db.transaction(trx => {
         trx.insert({
             nombre,
@@ -32,7 +32,6 @@ const handleCreate = (db)=> (req,res) => {
         .into('producto')
         .returning('id')
         .then(id=>{
-            console.log(id+"2")
             return trx('producto')
             .where({id:id[0]})
             .then(producto => {
@@ -42,9 +41,7 @@ const handleCreate = (db)=> (req,res) => {
         .then(trx.commit)
         .catch(trx.rollback)
     })
-    .catch(err => {
-        console.log(err)
-        res.status(400).json(err)})
+    .catch(err => res.status(400).json(err))
 }
 
 

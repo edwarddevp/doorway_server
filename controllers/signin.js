@@ -22,7 +22,9 @@ const handleSignin = (db,bcrypt)=> (req,res) => {
     }
 
     })
-    .catch(err=>res.status(400).json('Email y contraseña incorrectos'));
+    .catch(err=>{
+        console.log(err)
+        res.status(400).json('Email y contraseña incorrectos')});
 
 }
 

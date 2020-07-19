@@ -6,8 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "nodemon": "nodemon ./server.js localhost 3000",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "export": "knex-dump --file dump.json dump"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
