@@ -7,7 +7,7 @@ const handleSignin = (db,bcrypt)=> (req,res) => {
     }
 
     db('users')
-    .where('NombreCompleto','=',email)
+    .where('email','=',email)
     .then(data=>{
         if(data.length > 0){
         const isValid = bcrypt.compareSync(password, data[0].password)
@@ -22,7 +22,7 @@ const handleSignin = (db,bcrypt)=> (req,res) => {
     }
 
     })
-    .catch(err=>res.status(400).json('Datos equivocados'));
+    .catch(err=>res.status(400).json('Email y contraseña incorrectos'));
 
 }
 
