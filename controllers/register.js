@@ -13,7 +13,7 @@ const handleRegister = (db, bcrypt)=> (req,res) =>{
             password:hash,
             username: name,
             email: email
-        })
+        }, ['id'])
         .into('users')
         .then(id=>{
             return trx('users')
