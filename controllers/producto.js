@@ -30,6 +30,7 @@ const handleCreate = (db)=> (req,res) => {
             descripcion
         })
         .into('producto')
+        .returning('id')
         .then(id=>{
             return trx('producto')
             .where({id:id[0]})
