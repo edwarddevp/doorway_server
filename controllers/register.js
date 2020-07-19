@@ -16,11 +16,7 @@ const handleRegister = (db, bcrypt)=> (req,res) =>{
         }, ['id'])
         .into('users')
         .then(id=>{
-            return trx('users')
-            .where({id:id[0]})
-            .then(user => {
-                res.json(user[0].id)
-            })
+            return res.json(id)
         })
         .then(trx.commit)
         .catch(trx.rollback)
