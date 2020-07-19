@@ -22,7 +22,7 @@ const handleList = (db)=> (req,res) => {
           'productofactura.idProducto',
           'producto.id'
         )
-        .andWhere('factura.isRemoved', 0)
+        .andWhere('factura.isremoved', 0)
         .groupBy('id')
         .then(result => {
               res.json(result)
@@ -90,7 +90,7 @@ const handleRemove = (db)=> (req,res) => {
     db.transaction(trx => {
         trx('factura')
         .where({id:id})
-        .update({isRemoved:1})
+        .update({isremoved:1})
         .then(idResult=>{
                 res.json("Factura anulada con exito")
         })
